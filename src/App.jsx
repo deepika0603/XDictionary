@@ -1,61 +1,56 @@
 import { useState } from 'react';
 import dictionary from "./dictionary.json";
 
-function App(){
-  const [input,setInput]= useState("");
-  const [meaning , setMeaning]= useState("");
-  
-const handleInput = (e)=>{
-  setInput(e.target.value);
-};
+function App() {
+  const [input, setInput] = useState("");
+  const [meaning, setMeaning] = useState("");
 
-const findMeaning = (e, input) => {
-  e.preventDefault();
-  if(!input) {
-    setMeaning('Word not found in the dictionary.');
-    return;
-  }
-  
+  const handleInput = (e) => {
+    setInput(e.target.value);
+  };
 
-  const inputWord = Capitalization(input);
-    // console.log(word);
+  const findMeaning = (e) => {
+    e.preventDefault();
+    const trimmedInput = input.trim();
+    if (!trimmedInput) {
+      setMeaning('Word not found in the dictionary.');
+      return;
+    }
 
+    const inputWord = capitalize(trimmedInput);
+    const wordMeaning = dictionary.find((word) => inputWord === word.word);
 
-  const wordMeaning = dictionary.find((word) => inputWord === word.word);
-  // console.log(wordMeaning);
-  if (wordMeaning) {
-    setMeaning(wordMeaning.meaning);
-  } else {
-    setMeaning('Word not found in the dictionary.');
-  }
-};
+    if (wordMeaning) {
+      setMeaning(wordMeaning.meaning);
+    } else {
+      setMeaning('Word not found in the dictionary.');
+    }
+  };
 
-
-return(
-<>
-<h1>Dictionary APP</h1>
-<form onSubmit={(e)=> findMeaning(e, input)}>
-<div>
-<input
-    type="text"
-    placeholder="Search for a word..."
-    value={input}
-    onChange={handleInput}
- />
- <button type="submit">Search</button>
- <h3>Defination:</h3>
- <p>{meaning}</p>
-</div>
-</form>
-</>
-);
+  return (
+    <>
+      <h1>Dictionary App</h1>
+      <form onSubmit={findMeaning}>
+        <div>
+          <input
+            type="text"
+            placeholder="Enter a word"
+            aria-label="search-input"
+            value={input}
+            onChange={handleInput}
+          />
+          <button type="submit" aria-label="search-button">Search</button>
+          <h3>Definition:</h3>
+          <p>{meaning}</p>
+        </div>
+      </form>
+    </>
+  );
 }
+
 export default App;
 
-function Capitalization(letters) {
-
-  let word = letters.toLowerCase().split("");
-  word[0] = word[0].toUpperCase();
-  word = word.join("");
-  return word;
+function capitalize(str) {
+  if (!str) return '';
+  return str[0].toUpperCase() + str.slice(1).toLowerCase();
 }
